@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block title %}
+    
+    {% endblock title %}
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/templatemo-style.css' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--
+TemplateMo 556 Catalog-Z
+https://templatemo.com/tm-556-catalog-z
+-->
+
+</head>
+<body>
+    <!-- Page Loader -->
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+    </div>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'app:index' %}">
+                <i class="fa fa-search mr-2"></i>
+                Khidma
+            </a>
+            {% comment %} <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button> {% endcomment %}
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                    {% if request.user.is_authenticated %}
+                        {% comment %} <li class="nav-item">
+                            <a class="nav-link nav-link-2" href="{% url 'app:wishlist' %}">Wishlist</a>
+                        </li> {% endcomment %}
+                        <li class="nav-item submenu dropdown">
+                            <a href="#" class="nav-link dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false">Catygory</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item "><a class="nav-link" href="single-product.html">List of categories</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'app:wishlist' %}">New category</a></li>
+                                </ul>
+                        </li>
+
+                        <li class="nav-item submenu dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false">{{user.username}}</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item"><a class="nav-link" href="single-product.html">My Account</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'app:wishlist' %}">My Wishlist</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'userauths:sign-out' %}">Signout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-2" href="{% url 'userauths:sign-up' %}">Sign Up</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-2 " href="{% url 'userauths:sign-in' %}">Sign-in</a>
+                        </li>
+                    {% endif %}
+                </ul>
+        </div>      
+    </nav>
+    <div class="tm-hero d-flex justify-content-center align-items-center mb-5" data-parallax="scroll" data-image-src="{% static 'img/hero.jpg' %}">
+        <form class="d-flex tm-search-form">
+            <input name="cat1" class="form-control tm-search-input" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success tm-search-btn" type="submit">
+                <i class="fas fa-search"></i>
+            </button>          
+        </form>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'app:post-add' %}" class="btn btn-outline-success tm-search-btn ml-2" >
+                <i class="fas fa-plus"></i>
+            </a>
+        {% endif %}
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}">
+                <strong>{{ message }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <script>
+        setTimeout(() => {
+            $(".alert").alert("close");
+        },3000)
+    </script>
+
+    {% block body %}
+
+    {% endblock body %}
+    
+    <div class="container">
+        <h1>Our Clients</h1>
+    </div>
+    <footer class="tm-bg-gray pt-5 pb-3 tm-text-gray tm-footer">
+        <div class="container-fluid tm-container-small">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-12 px-5 mb-5">
+                    <h3 class="tm-text-primary mb-4 tm-footer-title">About Khidma</h3>
+                    {% comment %} <p>Khidma is free <a rel="sponsored" href="https://v5.getbootstrap.com/">Bootstrap 5</a> Alpha 2 HTML Template for video and photo websites. You can freely use this TemplateMo layout for a front-end integration with any kind of CMS website.</p> {% endcomment %}
+                    <p>Khidma is free, You can freely use this website for esealy serching about any things</p>
+
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6 col-12 px-5 mb-5">
+                    <h3 class="tm-text-primary mb-4 tm-footer-title">bmhcode</h3>
+                    <ul class="tm-footer-links pl-0">
+                        {% comment %} <li><a href="#">Advertise</a></li>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">Our Company</a></li>
+                        <li><a href="#">Contact</a></li> {% endcomment %}
+
+                       
+                        <li>Bouraghda Mohamed Elhadi</li>
+                        <li>Mobile : 07 76 47 16 46</li>
+                        <li>Constantine, Algeria</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6 col-12 px-5 mb-5">
+                    <ul class="tm-social-links d-flex justify-content-end pl-0 mb-5">
+                        <li class="mb-2"><a href="https://facebook.com"><i class="fab fa-facebook"></i></a></li>
+                        <li class="mb-2"><a href="https://twitter.com"><i class="fab fa-twitter"></i></a></li>
+                        <li class="mb-2"><a href="https://instagram.com"><i class="fab fa-instagram"></i></a></li>
+                        <li class="mb-2"><a href="https://pinterest.com"><i class="fab fa-pinterest"></i></a></li>
+                    </ul>
+                    {% comment %} <a href="#" class="tm-text-gray text-right d-block mb-2">Terms of Use</a>
+                    <a href="#" class="tm-text-gray text-right d-block">Privacy Policy</a> {% endcomment %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-md-7 col-12 px-5 mb-3">
+                    Copyright 2020 bmhcode Company. All rights reserved.
+                </div>
+                <div class="col-lg-4 col-md-5 col-12 px-5 text-right">
+                    Created by <a href="https://bmhcode.com" class="tm-text-gray" rel="sponsored" target="_parent">bmhcode</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script>
+        $(window).on("load", function() {
+            $('body').addClass('loaded');
+        });
+    </script>
+
+
+</body>
+</html>

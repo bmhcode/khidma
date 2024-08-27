@@ -1,0 +1,84 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title> Khidma / photo detail </title>
+{% endblock title %}
+
+<body class="m-5">
+
+{% block body %}
+
+<div class="container">
+    <h2 class="tm-text-primary mb-3">Add Post Page</h2>
+    <form method='POST' action="" enctype="multipart/form-data">
+            <div class="row">
+                    {% csrf_token %}
+                    <div class="col-md-6">               
+                        <div class="form-group m-3">
+                            {% comment %} <label>Select a category</label> {% endcomment %}
+                            <select name="category" class="form-control">
+                                <option value='none'>Select a category...</option>
+                                {% for category in categories %}
+                                    <option value='{{category.id}}'>{{category.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group m-3">
+                            <label>Create a new category</label>
+                            <input name="category_new" type="text" placeholder="Create a new category" class="form-control">
+                        </div>
+                        <div class="form-group m-3">
+                            <label>Title</label>
+                            <input required name="title" type="text" placeholder="Title of post " class="form-control">
+                        </div>
+                        <div class="form-group m-3">
+                            <label>Address</label>
+                            <input required name="address" type="text" placeholder="Address" class="form-control">
+                        </div>
+
+                        {% comment %} <div class="form-group m-3">
+                            <select name="ville" class="form-control">
+                                <option value='none'>Select a ville...</option>
+                                {% for ville in post_ville %}
+                                    <option value='ville'>{{ville}}</option>
+                                {% endfor %}
+                            </select>
+                        </div> {% endcomment %}
+
+                        <div class="form-group m-3">
+                            <label>Ville</label>
+                            <input required name="ville" type="text" placeholder="Ville" class="form-control">
+                        </div>
+
+                        <div class="form-group m-3">
+                            <label>Email</label>
+                            <input name="email" type="email" placeholder="Email" class="form-control">
+                        </div>
+
+                        <div class="form-group m-3">
+                            <label>Phone</label>
+                            <input required name="phone" type="text" placeholder="Phone" class="form-control">
+                        </div>   
+                    </div>
+                    <div class="col-md-6">   
+                        <div class="form-group m-3">
+                            <textarea rows="8" name="description" placeholder="description about your post" class="form-control rounded-0"></textarea>
+                        </div>
+                        <div class="form-group m-3">
+                            <label>Upload image</label>
+                            <input required name="images" type="file" multiple class="form-control-file">
+                        </div>        
+                        <button type='submit' class="btn btn-primary m-3"> Add Post </button>
+                    </div>
+                </div>              
+    </form>
+    
+</div>
+
+
+{% endblock body %}
+  
+</body>
+
+</html>

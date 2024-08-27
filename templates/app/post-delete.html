@@ -1,0 +1,26 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title> Khidma / Delete post </title>
+{% endblock title %}
+
+<body class="m-5">
+
+{% block body %}
+
+<div class="container">
+
+    <h2 class="tm-text-primary mb-3">Delete Post </h2>
+    <h5> Are you sur to delete this post ?</h5>
+
+    <form method='POST' action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button type='submit' class="btn btn-primary m-3"> Delete Post </button>
+    </form>
+    
+</div>
+
+{% endblock body %}
+  
+</body>

@@ -1,0 +1,226 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title> Khidma / photo detail </title>
+{% endblock title %}
+
+<body>
+
+{% block body %}
+
+<!-- Page Loader -->
+   
+<div class="container-fluid tm-container-content tm-mt-60">
+        <div class="row mb-4 ">
+        
+            <h4 class="col-12 tm-text-primary">{{ post.title }} ( {{ post.category }} )</h4>
+           
+        </div>
+        <div class="row tm-mb-80 mb-4">
+            <div class="col-xl-8 col-lg-7 col-md-6 col-sm-12">
+                <img src="{{ post.imageURL }}" alt="Image" class="img-fluid" style="height:400px; width:450px; padding: 10px;">
+            </div>
+            <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
+                <div class="tm-bg-gray tm-video-details">
+                    <h5>
+                    {% comment %} <div class="rating-star">
+                        <span title="{{ average_rating.rating }}/5">
+                        <!-- By default the star is full else it is empty otherwise it is half -->
+                            <i class="fa fa-star{% if average_rating.rating < 0.5%}-o{% elif average_rating.rating >= 0.5 and average_rating.rating < 1 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if average_rating.rating < 1.5%}-o{% elif average_rating.rating >= 1.5 and average_rating.rating < 2 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if average_rating.rating < 2.5%}-o{% elif average_rating.rating >= 2.5 and average_rating.rating < 3 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if average_rating.rating < 3.5%}-o{% elif average_rating.rating >= 3.5 and average_rating.rating < 4 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if average_rating.rating < 4.5%}-o{% elif average_rating.rating >= 4.5 and average_rating.rating < 5 %}-half-o{% endif %}" aria-hidden="true"></i>
+                        </span>
+                        <span><strong>( {{ average_rating.rating|floatformat:2 }}/5.0 )</strong></span>
+                    </div> {% endcomment %}
+                    </h5>
+                    <br>
+                    {% comment %} <h4 class="tm-text-gray-dark mb-2">Centent</h4> {% endcomment %}
+                    <!-- Start Informations about the post -->
+                    <div class="d-flex justify-content-between tm-text-gray">
+                        <h4 class="col-12 tm-text-primary">{{ post.title }}</h4>
+                        <a class="fa fa-heart" href="{% url 'app:add-to-wishlist' %}?post_slug={{post.slug}}"></a>
+                        </div>
+                    <p class="mb-3">
+                        <p>{{ post.description|truncatechars:60 }}</p>
+                    </p>
+                    <div class="mb-4 d-flex flex-wrap">
+                        <div class="mr-4 mb-2 ">
+                            <span class="tm-text-gray-dark ">Address : </span><span class="tm-text-primary">{{ post.address }}</span>
+                        </div>
+
+                        <div class="mr-4 mb-2">
+                            <span class="tm-text-gray-dark">Ville : </span><span class="tm-text-primary">{{ post.ville }}</span>
+                        </div>
+
+                        <div class="mr-4 mb-2">
+                            <span class="tm-text-gray-dark">Mobile : </span><span class="tm-text-primary">{{ post.phone }}</span>
+                        </div>
+                        <div class="mr-4 mb-2">
+                            <span class="tm-text-gray-dark">Email : </span><span class="tm-text-primary">{{ post.email }}</span>
+                        </div>
+                        <div class="mr-4 mb-2">
+                            <span class="tm-text-gray-dark">Created at : </span><span class="tm-text-primary">{{ post.date_created|date:"d M Y" }}</span>
+                        </div>
+                       
+                    </div>
+                    <!-- End Informations about the post -->
+
+                    <!-- Start Skills -->
+                    <div class="mb-3">
+                        <h4 class="tm-text-gray-dark mb-3">My Skills</h4>
+                        {% comment %} {% for tag in review.tags.all %}
+                            <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">{{tag.name}}</a>
+                        {% endfor %} 
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Cloud</a>
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Bluesky</a>
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">Real Estate</a>
+                        {% endcomment %}
+                        <span>{{post.skills}}</span>
+                    </div>
+                    <!-- End Skills -->
+
+                    {% comment %} {% if request.user.is_authenticated  %} {% endcomment %}
+                        {% if request.user == post.user %}
+                            <a href="{% url 'app:post-update' post.slug %}" class="btn btn-outline-success ml-2" >
+                                Update
+                            </a>
+                            <a href="{% url 'app:post-delete' post.slug %}" class="btn btn-outline-success ml-2" >
+                                Delete
+                            </a>
+                            <a href="{% url 'app:post-images-add' post.slug %}" class="btn btn-outline-success ml-2" >
+                                Add image
+                            </a>           
+
+                        {% endif %}
+                    {% comment %} {% endif %} {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <!-- Start list of post images -->
+        <div class="row mb-4">
+                {% comment %} {% for img in post_images  %} {% endcomment %}
+                {% for img in post.post.all  %}
+                    <div class="card m-2" style="width: 14rem;">
+                        <img src="{{ img.image.url }}" style="height: 200px;" class="card-img-top m-1" alt="...">
+                        <div class="card-body">
+                            <p class="card-text">{{ img.libellé }}</p>
+                        </div>
+                       
+                        {% if request.user == post.user %} 
+                        <div class="card-body">
+                            <a href="{% url 'app:post-images-update' img.id %}" class="card-link">Update</a>
+                            <a href="{% url 'app:post-images-delete' img.id %}" class="card-link">delete</a>
+                        </div>
+                        {% endif %}
+                    </div>   
+
+                {% endfor %}
+        </div>
+        <!-- End list of post images -->
+
+        <!-- Start list of reviews -->
+        {% comment %} <h5>Reviews</h5>
+        <div class="row">
+            {% for review in reviews  %}
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                    <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="{{review.user.image.url}}" style="width="100" height="100"" class="" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                            <h5 class="card-title">{{review.user}}</h5>
+                            <p class="card-text">{{review.review}}</p>
+                            <div class="rating-star">
+                                <span title="{{ review.rating }}/5">
+                                <!-- By default the star is full else it is empty otherwise it is half -->
+                                    <i class="fa fa-star{% if review.rating < 0.5%}-o{% elif review.rating >= 0.5 and review.rating < 1 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if review.rating < 1.5%}-o{% elif review.rating >= 1.5 and review.rating < 2 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if review.rating < 2.5%}-o{% elif review.rating >= 2.5 and review.rating < 3 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if review.rating < 3.5%}-o{% elif review.rating >= 3.5 and review.rating < 4 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if review.rating < 4.5%}-o{% elif review.rating >= 4.5 and review.rating < 5 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                </span>
+                                <span><strong>( {{ review.rating }}/5 )</strong></span>
+                            </div>
+
+                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div> {% endcomment %}
+        <!-- End list of reviews -->
+
+    <!-- Star Add review form -->
+    {% comment %} <div class="container">
+        <h2 class="tm-text-primary mb-3">Add Review</h2>
+            <form method='POST' action=''>
+                {% csrf_token %}    
+                <div class="row">
+                        {% csrf_token %}
+                        <div class="col-md-6">               
+                            <div class="form-group m-3">
+                                {{ review_form.review}}
+                            </div>
+                            <div class="form-group m-3">
+                                {{ review_form.rating }}
+                            </div>        
+                            <button type='submit' class="btn btn-primary m-3"> Submit </button>
+                        </div>
+                </div>              
+        </form>
+    </div> {% endcomment %}
+    <!-- End Add review form -->
+
+    <!-- Related posts -->
+        <div class="row mb-4">
+            <h4 class="col-12 tm-text-primary">List of the {{post.category}}s</h4>
+        </div>
+        <div class="row mb-3 tm-gallery">
+            {% for post in related_posts %}
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <h5>{{ post.category }} <span class="tm-text-secondary">({{ post.user }})</span></h5>
+                    <a class="fa fa-heart" href="{% url 'app:add-to-wishlist' %}?post_slug={{post.slug}}"></a>
+                </div>
+
+                <figure class="effect-ming tm-video-item">
+
+                    <img src="{{ post.imageURL }}" alt="Image" class="img-fluid" style="height: 250px; width: 200px;">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>{{ post.category }}</h2>
+                        <a href="{{ post.get_absolute_url }}">View more</a>
+                    </figcaption>                    
+                </figure>
+                <h5><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
+                <span class="tm-text-secondary">{{ post.address }}</span> <br>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-dark">{{ post.phone }}</span>
+                    {% comment %} <div class="rating-star">
+                        <span title="{{ post.rating }}/5">
+                        <!-- By default the star is full else it is empty otherwise it is half -->
+                            <i class="fa fa-star{% if post.rating < 0.5%}-o{% elif post.rating >= 0.5 and post.rating < 1 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if post.rating < 1.5%}-o{% elif post.rating >= 1.5 and post.rating < 2 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if post.rating < 2.5%}-o{% elif post.rating >= 2.5 and post.rating < 3 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if post.rating < 3.5%}-o{% elif post.rating >= 3.5 and post.rating < 4 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            <i class="fa fa-star{% if post.rating < 4.5%}-o{% elif post.rating >= 4.5 and post.rating < 5 %}-half-o{% endif %}" aria-hidden="true"></i>
+                        </span>
+                        <span><strong>( {{ post.rating }}/5 )</strong></span>
+                    </div> 
+                    <span><strong>( {{ post.post_review.get_rating }} )</strong></span>
+                    {% endcomment %}
+                </div>     
+            </div>
+            {% endfor %}      
+        </div>  
+    <!-- Related posts End -->
+
+</div> <!-- container-fluid, tm-container-content -->
+
+{% endblock body %}

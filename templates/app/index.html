@@ -1,0 +1,108 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title> Khidma </title>
+{% endblock title %}
+    
+{% block body  %}
+
+    <div class="container tm-mt-60">
+        <div class="row mb-4">
+            {% comment %} <a href="{% url 'app:index' %}" class="tm-text-primary mr-4 mb-2 d-inline-block">
+                Tous <span>{{ posts.count }}</span> 
+            </a>
+            {% for cat in categories %}
+                <a href="{% url 'app:index' %}?cat1={{cat.name}}" class="tm-text-primary mr-4 mb-2 d-inline-block">
+                    {{ cat.name|capfirst }} <span> ({{ cat.category.count }} post{{ cat.category.count|pluralize:"s"}})</span>
+                </a>
+            {% endfor %}    {% endcomment %}
+            <select onchange="location=value" name="catselect" aria-label="Default select example">
+                <option value="{% url 'app:index' %}">All categories</option>
+                {% for cat in categories %}
+                    <option value="{% url 'app:index' %}?cat1={{cat.name}}">
+                        {{ cat.name|capfirst }} <span> ({{ cat.category.count }} post{{ cat.category.count|pluralize:"s"}})</span>
+                    </option>
+                {% endfor %}
+            </select>
+            <a href="{% url 'app:index' %}">All categories</a>
+          
+        </div>
+ 
+        <h3 class="col-6 tm-text-primary ml-0"> List of posts</h3>
+
+        <div class="row tm-mb-90">
+            {% for post in posts_in_page %}
+        	    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 m-3">
+                 
+                    {% if post in posts_wishlist %}
+                        <h5>{{ post.category }}<span class="tm-text-secondary">({{ post.user }})</span>
+                            <a class="fa fa-heart" href="{% url 'app:add-to-wishlist' %}?post_slug={{post.slug}}"></a>
+                        </h5> 
+                    {% else %}   
+                        <h5>{{ post.category }}<span class="tm-text-secondary">({{ post.user }})</span>
+                            <a class="fa fa-heart-o" href="{% url 'app:add-to-wishlist' %}?post_slug={{post.slug}}"></a>
+                        </h5>
+                    {% endif %}
+
+                    <figure class="effect-ming tm-video-item mb-2" style='width:300px; height:150px; position: relative; margin: 0 auto'>        
+                        <img src="{{ post.imageURL }}" alt="Image" class="mb-4 img-fluid" >
+                        <figcaption class="d-flex align-items-center justify-content-center">
+                            <h2>{{ post.category }}</h2>
+                            <a href="{{ post.get_absolute_url }}">View more</a>
+                        </figcaption>                    
+                    </figure>
+
+                    {% comment %} <h4><a class="tm-text-primary mb-4 " href="{% url 'app:post-detail' post.slug %}">{{ post.title }}</a></h4> {% endcomment %}
+                    <h5><a class="tm-text-primary mb-4" href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
+                    <p>{{ post.address }}</p> 
+                    <div class="d-flex justify-content-between tm-text-gray">
+                        <span class="tm-text-gray-dark">{{ post.phone }}</span>
+                        {% comment %} <span>9,906 views</span> {% endcomment %}
+                           {% comment %} <span title="{{ average_rating.ratinga }}/5">
+                            <!-- By default the star is full else it is empty otherwise it is half -->
+                                <i class="fa fa-star{% if average_rating < 0.5%}-o{% elif average_rating >= 0.5 and average_rating < 1 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                <i class="fa fa-star{% if average_rating < 1.5%}-o{% elif average_rating >= 1.5 and average_rating < 2 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                <i class="fa fa-star{% if average_rating < 2.5%}-o{% elif average_rating >= 2.5 and average_rating < 3 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                <i class="fa fa-star{% if average_rating < 3.5%}-o{% elif average_rating >= 3.5 and average_rating < 4 %}-half-o{% endif %}" aria-hidden="true"></i>
+                                <i class="fa fa-star{% if average_rating < 4.5%}-o{% elif average_rating >= 4.5 and average_rating < 5 %}-half-o{% endif %}" aria-hidden="true"></i>
+                            </span>
+                            <span><strong>( {{ average_rating }}/5 )</strong></span>  {% endcomment %}
+                           
+                            <div class="course-rating">
+                                3.5
+                                <i class="fa fa-star"></i>	
+                                <i class="fa fa-star"></i>	
+                                <i class="fa fa-star"></i>	
+                                <i class="fa fa-star-half"></i>								
+                                <i class="fa fa-star-o"></i>	
+                            </div> 
+                        </div>
+                </div>   
+            {% endfor %}
+    
+        </div> <!-- row -->
+
+        <!-- Pagination -->
+        <div class="row tm-mb-90">
+            <div class="col-12 d-flex justify-content-between align-items-center tm-paging-col">
+                {% if posts_in_page.has_previous %}
+                    <a href="?page={{ posts_in_page.previous_page_number }}" class="btn btn-primary tm-btn-prev mb-2 disabled">Previous</a>
+                {% endif %}
+                <div class="tm-paging d-flex">
+                    {% for i in nums %}
+                        <a class="tm-paging-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+                        {% comment %} <a href="javascript:void(0);" class="tm-paging-link">4</a> {% endcomment %}
+                    {% endfor %}
+                </div>
+                {% if posts_in_page.has_next %}
+                    <a href="?page={{ posts_in_page.next_page_number }}" class="btn btn-primary tm-btn-next">Next Page</a>
+                {% endif %}
+
+            </div>            
+        </div>
+        
+    </div> <!-- container-fluid, tm-container-content -->
+    
+{% endblock body %}
+   

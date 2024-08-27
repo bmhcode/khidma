@@ -1,0 +1,72 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title> Khidma / add post </title>
+{% endblock title %}
+
+<body class="m-5">
+
+{% block body %}
+
+<div class="container">
+    <h2 class="tm-text-primary mb-3">Add Post Page</h2>
+    <h1>{{message}}</h1>
+        {% comment %} {% if submitted %}
+            Your Post was submitted Succefully !        
+        {% else %}
+        {% endcomment %}
+            <form method='POST' action='' enctype='multipart/form-data'>
+                {% csrf_token %}    
+                {% comment %} {{form.as_p}}    {% endcomment %}
+                <div class="row">
+                    <div class="col-6 mb-2">
+                        {{form.category.label}}   
+                        {{form.category}}   
+                        <br>
+                        {{form.title.label}}   
+                        {{form.title}}   
+                    </div>
+                    <div class="col-6 mb-2">
+                        {{form.address.label}}   
+                        {{form.address}}   
+                        <br>
+                        {{form.ville.label}}   
+                        {{form.ville}}   
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-6 mb-2">
+                        {{form.email.label}}   
+                        {{form.email}}   
+                        <br>
+                        {{form.phone.label}}   
+                        {{form.phone}}   
+                    </div>
+                    <div class="col-6 mb-2">
+                        {{form.description.label}}   
+                        {{form.description}}   
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-6 mb-2">
+                        {{form.skills.label}}   
+                        {{form.skills}}   
+                    </div>
+                    <div class="col-6">
+                        {{form.image.label}}   
+                        {{form.image}}   
+                    </div>
+                </div>
+                <button type='submit' class="btn btn-primary m-3"> Add Post </button> 
+                <br>
+               
+            </form>
+        {% comment %} {% endif %} {% endcomment %}
+</div>
+
+{% endblock body %}
+  
+</body>

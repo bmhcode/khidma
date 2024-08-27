@@ -1,0 +1,23 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title> Khidma / add image post </title>
+{% endblock title %}
+
+<body class="m-5">
+
+{% block body %}
+
+<div class="container">
+    <h2 class="tm-text-primary mb-3">Add Post image</h2>
+            <form method='POST' action='' enctype='multipart/form-data'>
+                {% csrf_token %}    
+                {{form.as_p}}   
+                <button type='submit' class="btn btn-primary m-3"> Add image </button> 
+            </form>
+</div>
+
+{% endblock body %}
+  
+</body>
