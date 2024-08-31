@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ts!d21k$6hqar_-pe2y&gu7px2j54@6uu8mv@jmn$@k_^yaxgg'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -139,14 +141,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'userauths.User'
 
-# JAZZMIN_SETTINGS = {
-#     'site_header' : "BMHcode Shop",
-#     'site_brand' : "Your Wilcome",
-#     'site_logo' : "img/img-04.jpg",
-#     'copyright' : "bmhcode-shop.com",
+JAZZMIN_SETTINGS = {
     
-
-# }  
+    'site_header' : "BMHcode Shop",
+    'site_brand' : "Your Wilcome",
+    'site_logo' : "img/img-04.jpg",
+    'copyright' : "bmhcode-shop.com",
+    
+}  
 # pip install django-jazzmin and
 
    #  INSTALLED_APPS = [

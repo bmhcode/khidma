@@ -1,0 +1,29 @@
+1 - create .env
+2 - SECRET_KEY = django-insecure-ts!d21k$6hqar_-pe2y&gu7px2j54@6uu8mv@jmn$@k_^yaxgg
+    DATABASE_URL = django-insecure-ts!d21k$6hqar_-pe2y&gu7px2j54@6uu8mv@jmn$@k_^yaxgg // external db from render
+3- pip install python-decouple
+4- settings :
+    + from decouple import config
+    SECRET_KEY = config('SECRET_KEY')
+5- pip install dj-database-url
+6- settings :
+    import dj_database_url
+    ...
+    ...
+    DATABASE = {
+        'default': dj_database_url.parse(config('DATABASE_URL'))
+    }
+
+7- pip install gunicorn
+8- pip install psycopg2
+9- pip freeze > requirements.txt
+10- settings/urls.py
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+11- git add .
+    git commit -m "feat : config for deploiemnt"
+12- python manage.py migrate
+13- Go to render
+    Start Command :  gunicorn app.wsgi:application   
+    Environment Variables : SECRET_KEY = django-insecure-ts!d21k$6hqar_-pe2y&gu7px2j54@6uu8mv@jmn$@k_^yaxgg # (in .env)
+                            PYTHON_VERSION = 3.11.0
+                            DATABASE_URL = # go to render Internal Darabase URL
