@@ -112,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'UTC'
 
@@ -137,17 +137,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-JAZZMIN_SETTINGS = {
-    'site_header' : "BMHcode Shop",
-    'site_brand' : "Your Wilcome",
-    'site_logo' : "img/img-04.jpg",
-    'copyright' : "bmhcode-shop.com",
-    
-   # INSTALLED_APPS = [
-        # 'jazzmin', 
-
-}  # pip install django-jazzmin and
-
-
 AUTH_USER_MODEL = 'userauths.User'
+
+# JAZZMIN_SETTINGS = {
+#     'site_header' : "BMHcode Shop",
+#     'site_brand' : "Your Wilcome",
+#     'site_logo' : "img/img-04.jpg",
+#     'copyright' : "bmhcode-shop.com",
+    
+
+# }  
+# pip install django-jazzmin and
+
+   #  INSTALLED_APPS = [
+        # + 'jazzmin', in the first ligne 

@@ -157,3 +157,25 @@ class Wishlist_model(models.Model):
     def __str__(self):
         return self.post.title
     
+
+class Brand(models.Model):
+    name  = models.CharField(max_length=128, verbose_name =_('Name of brand'))
+    image = models.ImageField(upload_to='brand', default='brand.jpg', blank=True, verbose_name=_('brand'))
+    start = models.DateTimeField(verbose_name=_('Start at'))
+    end   = models.DateTimeField(verbose_name=_('End at'))
+    is_active = models.BooleanField(default=False)
+    slug  = models.SlugField(blank=True,null=True)
+   
+    def __str__(self):
+        return  f"{self.name}"
+    
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
+    
+    def brand_image(self):
+        return mark_safe('<img src="%s" width="50" height="50"/>' % (self.image.url))
+    
