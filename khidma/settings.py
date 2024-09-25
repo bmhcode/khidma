@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     
-    'jazzmin', # pip install jazzmin or # pip install django-jazzmin # it must put it on the 1rst line
+    'jazzmin', # pip install django-jazzmin # it must put it on the 1rst line
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     # Custom Apps
     'app',
     'userauths',
+    'django_filters', # pip install django-filter
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

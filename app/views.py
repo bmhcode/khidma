@@ -1,34 +1,79 @@
 from math import prod
+from typing import Any
+from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_list_or_404
 from django.db.models import Count, Avg
-from .models import Category, Post, PostImages, PostReview, Wishlist_model
 from bs4 import Tag
 from django.core.paginator import Paginator
 from django.db.models import Q
 from taggit.models import Tag
-from app.forms import PostForm, PostImagesForm, PostReviewForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+
+from app.models import Category, Post, PostImages, PostReview, Wishlist_model
+from app.forms import PostForm, PostImagesForm, PostReviewForm
+from django.forms import inlineformset_factory
+from app.filters import PostFilter
+
+from django.views.generic.list import ListView
+
+# API
+from app.serializers import PostSerializer
+from rest_framework.generics import ListAPIView
+from django_filters.rest_framework import DjangoFilterBackend
+# end API
+
+
+class PostListAPIView(ListAPIView) :
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    filter_backends  = (DjangoFilterBackend,)
+    filterset_class  = PostFilter
+
+
+# @login_required(login_url='userauths:sign-in') # change sign-in to login
+# def index(request):
+#     categories = Category.objects.all()
+#     # categories = Category.objects.all().annotate(post_count=Count("post"))
+#     cat = request.GET.get('cat1')
+#     if cat == None:
+#         posts = Post.objects.all().order_by("date_created") # .order_by('?') random
+#     else:
+#         # posts = Post.objects.filter(category__name=cat)
+#         posts = Post.objects.filter(Q(category__name__icontains=cat) | 
+#                                 Q(title__icontains=cat)
+#                                 )
+#     posts_wishlist = Wishlist_model.objects.all()
+    
+#     # Set up Pagination
+#     P = Paginator(posts, 4)
+#     page = request.GET.get('page')
+#     posts_in_page = P.get_page(page)
+#     nums = "a" * posts_in_page.paginator.num_pages
+#     nomber_pages = posts_in_page.paginator.num_pages 
+    
+#     average_rating = 3.76   # for test
+    
+#     context = {'categories':categories,'posts':posts,
+#                'nums':nums,'nomber_pages':nomber_pages,
+#                'posts_in_page':posts_in_page,
+#                'posts_wishlist':posts_wishlist,
+#                'average_rating':average_rating}
+#     return render(request, 'app/index.html', context)
+
 
 @login_required(login_url='userauths:sign-in') # change sign-in to login
 def index(request):
     categories = Category.objects.all()
-    # categories = Category.objects.all().annotate(post_count=Count("post"))
-
-    cat = request.GET.get('cat1')
-    if cat == None:
-        posts = Post.objects.all().order_by("date_created") # .order_by('?') random
-    else:
-        # posts = Post.objects.filter(category__name=cat)
-        posts = Post.objects.filter(Q(category__name__icontains=cat) | 
-                                Q(title__icontains=cat)
-                                )
-        
-    posts_wishlist = Wishlist_model.objects.all()
     
+    post_filter = PostFilter(request.GET, queryset = Post.objects.all())
+    
+    posts_in_wishlist = Wishlist_model.objects.all()
+
     # Set up Pagination
-    P = Paginator(posts, 4)
+    posts = post_filter.qs
+    P = Paginator(posts, 3)
     page = request.GET.get('page')
     posts_in_page = P.get_page(page)
     nums = "a" * posts_in_page.paginator.num_pages
@@ -36,12 +81,32 @@ def index(request):
     
     average_rating = 3.76   # for test
     
-    context = {'categories':categories,'posts':posts,
-               'nums':nums,'nomber_pages':nomber_pages,
-               'posts_in_page':posts_in_page,
-               'posts_wishlist':posts_wishlist,
-               'average_rating':average_rating}
+    context = {
+               'categories': categories,
+               'post_filter_form': post_filter.form,
+               'nums': nums,
+               'nomber_pages': nomber_pages,
+               'posts_in_page': posts_in_page,         
+               'posts_in_wishlist': posts_in_wishlist,
+               'average_rating': average_rating,
+               }
     return render(request, 'app/index.html', context)
+
+class PostListView(ListView):
+    queryset = Post.objects.all()
+    template_name = 'app/index.html'
+    context_object_name ='posts_in_page'
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = PostFilter(self.request.GET, queryset=queryset)       
+        return self.filterset.qs
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post_filter_form'] = self.filterset.form
+        return context
+        
 
 def post_add00(request):
     categories = Category.objects.all() # categories = user.category_set.all() 
@@ -116,18 +181,32 @@ def post_add(request):
         form = PostForm()
         return render(request, 'app/post-add.html', {'form': form})
 
+# def post_images_add(request,slug):
+#     if request.method == 'POST':
+#         post = Post.objects.get(slug=slug)
+#         form = PostImagesForm(request.POST, request.FILES)
+#         form.instance.post = post
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Thank you! You have successfully Add your image !")
+#             return redirect('app:post-detail', slug)
+#     else:
+#         form = PostImagesForm()
+#         return render(request, 'app/post-images-add.html', {'form': form})
+
 def post_images_add(request,slug):
+    imageFormSet = inlineformset_factory(Post,PostImages,fields=('image','libellé'), extra=4)
+    post = Post.objects.get(slug=slug)
+    formset = imageFormSet(instance=post)
     if request.method == 'POST':
-        post = Post.objects.get(slug=slug)
-        form = PostImagesForm(request.POST, request.FILES)
-        form.instance.post = post
-        if form.is_valid():
-            form.save()
+        formset = imageFormSet(request.POST, request.FILES, instance=post)
+        # form.instance.post = post
+        if formset.is_valid():
+            formset.save()
             messages.success(request, "Thank you! You have successfully Add your image !")
             return redirect('app:post-detail', slug)
-    else:
-        form = PostImagesForm()
-        return render(request, 'app/post-images-add.html', {'form': form})
+    context = {'formset': formset}
+    return render(request, 'app/post-images-add.html', context)
 
 def post_images_delete(request,id):
     item = PostImages.objects.get(id=id)
@@ -168,15 +247,15 @@ def post_detail(request,slug):
 
 def post_update(request,slug):
     post = Post.objects.get(slug=slug)
-    form = PostForm(request.POST or None,request.FILES or None, instance=post)
+    form = PostForm(request.POST or None, request.FILES or None, instance=post)
     if form.is_valid():
         form.save()
         messages.success(request, f"Hey {post.user}, your modification was seccesfully done")
         return redirect('app:post-detail', post.slug)
         # return HttpResponseRedirect('/')
         
-    context = {'post':post, 'form' : form}#, 'message' : message}
-    return render(request,'app/post-update.html', context)
+    context = { 'post' : post, 'form' : form } #, 'message' : message}
+    return render(request, 'app/post-update.html', context)
 
 def post_delete(request,slug):
     post = Post.objects.get(slug=slug)
@@ -273,3 +352,5 @@ def videos(request):
 #         'tag' : tag
 #     }
 #     return render(request,"app:tag.html", context)
+
+

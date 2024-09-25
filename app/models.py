@@ -59,6 +59,18 @@ VILLE = (
     (10,"Bouira"), 
 )
 class Post(models.Model):
+    '''
+    class VilleChoices(models.IntegerChoices):
+        1='Adrar'
+        2='Chelef'
+        3='Agout'
+        4='Oum Bouaghi'
+        5='Batna'
+        ....        
+    ville = models.IntegerField(max_length=20, choices = VilleChoices.choices, verbose_name=_('Ville'))
+
+    '''
+        
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("User"))
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="category", verbose_name=_("Category"))
     title  = models.CharField(max_length=100, default='', help_text='Title of post', verbose_name = _("title"))
@@ -114,6 +126,9 @@ class PostImages(models.Model):
     libellé = models.CharField(max_length=64, blank=True, null=True, verbose_name=_("libellé"))
     date = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return self.image.name
+    
     class Meta:
         verbose_name_plural = "Post images"
 
@@ -157,7 +172,6 @@ class Wishlist_model(models.Model):
     def __str__(self):
         return self.post.title
     
-
 class Brand(models.Model):
     name  = models.CharField(max_length=128, verbose_name =_('Name of brand'))
     image = models.ImageField(upload_to='brand', default='brand.jpg', blank=True, verbose_name=_('brand'))

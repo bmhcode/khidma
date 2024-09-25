@@ -17,7 +17,7 @@
                     {{ cat.name|capfirst }} <span> ({{ cat.category.count }} post{{ cat.category.count|pluralize:"s"}})</span>
                 </a>
             {% endfor %}    {% endcomment %}
-            <select onchange="location=value" name="catselect" aria-label="Default select example">
+            {% comment %} <select onchange="location=value" name="catselect" aria-label="Default select example">
                 <option value="{% url 'app:index' %}">All categories</option>
                 {% for cat in categories %}
                     <option value="{% url 'app:index' %}?cat1={{cat.name}}">
@@ -26,16 +26,31 @@
                 {% endfor %}
             </select>
             <a href="{% url 'app:index' %}">All categories</a>
-          
+           {% endcomment %}
         </div>
  
+
+        <form class="d-flex" role="search">
+            {{ post_filter_form }}
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+
+
+
+
+
+
+
+
+
         <h3 class="col-6 tm-text-primary ml-0"> List of posts</h3>
 
         <div class="row tm-mb-90">
             {% for post in posts_in_page %}
-        	    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 m-3">
+          
+      	    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 m-3">
                  
-                    {% if post in posts_wishlist %}
+                    {% if post in posts_in_wishlist %}
                         <h5>{{ post.category }}<span class="tm-text-secondary">({{ post.user }})</span>
                             <a class="fa fa-heart" href="{% url 'app:add-to-wishlist' %}?post_slug={{post.slug}}"></a>
                         </h5> 

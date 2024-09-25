@@ -42,7 +42,6 @@ class PostImagesForm(forms.ModelForm):
             'libellé' : forms.TextInput(attrs={'class':'form-control'}),
         }
 
-
 class PostReviewForm(forms.ModelForm):
     review = forms.CharField(widget=forms.Textarea(attrs={'placeholder':"Write review"}))
     class Meta:

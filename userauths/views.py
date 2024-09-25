@@ -20,7 +20,7 @@ def register_view(request):
             return redirect("app:index")
     else:
         form = UserRegisterForm()
-        context = {'form':form}
+    context = {'form':form}
     return render(request, "userauths/sign-up.html", context)
 
 def login_view(request):

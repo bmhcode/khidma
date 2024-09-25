@@ -13,8 +13,14 @@
     <h2 class="tm-text-primary mb-3">Add Post image</h2>
             <form method='POST' action='' enctype='multipart/form-data'>
                 {% csrf_token %}    
-                {{form.as_p}}   
+                {% comment %} {{form.as_p}}    {% endcomment %}
+                {{ formset.management_form }}
+                {% for item in formset %}   
+                    {{ item }} <br>
+                {% endfor %}
+
                 <button type='submit' class="btn btn-primary m-3"> Add image </button> 
+
             </form>
 </div>
 
