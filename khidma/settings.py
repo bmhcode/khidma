@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 import os
 from decouple import config
 
@@ -28,7 +29,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1','.onrender.com'] 
 
 # Application definition
 
@@ -85,12 +87,30 @@ WSGI_APPLICATION = 'khidma.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+'''
+'''
+DATABASES = {
+    "defautl" : dj_database_url.parse(os.environ.get("DATABASE_URL"))
+}
+'''
+
+
+DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgressql',
+            'NAME': 'khidma_db',
+            'USER': 'khidma_db_user',
+            'PASSWORD': 'mQYxZ082NKr1VQTLupFXvpbRBzLMUxww',
+            'HOST' : 'dpg-cr9fbtogph6c73cukfj0-a',
+            'PORT' : '5432',
+        }
 }
 
 
