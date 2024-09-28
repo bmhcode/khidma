@@ -70,7 +70,10 @@
 
                     {% comment %} <h4><a class="tm-text-primary mb-4 " href="{% url 'app:post-detail' post.slug %}">{{ post.title }}</a></h4> {% endcomment %}
                     <h5><a class="tm-text-primary mb-4" href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
-                    <p>{{ post.address }}</p> 
+                    <p>{{ post.address }} - <span class="tm-text-primary">{{ post.get_ville_display }}</span></p> 
+
+
+
                     <div class="d-flex justify-content-between tm-text-gray">
                         <span class="tm-text-gray-dark">{{ post.phone }}</span>
                         {% comment %} <span>9,906 views</span> {% endcomment %}

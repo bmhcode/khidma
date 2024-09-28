@@ -1,4 +1,4 @@
-import django_filters                # pip install django-filter
+import django_filters         # pip install django-filter
 from app.models import Post 
 
 class PostFilter(django_filters.FilterSet):
