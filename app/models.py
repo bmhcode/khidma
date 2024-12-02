@@ -73,7 +73,7 @@ class Post(models.Model):
         
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("User"))
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="category", verbose_name=_("Category"))
-    title  = models.CharField(max_length=100, default='', help_text='Title of post', verbose_name = _("title"))
+    title  = models.CharField(max_length=100, default='', help_text='Title of post', verbose_name = _("title"), unique=True)
     address = models.CharField(max_length=200, default='', help_text='Address of post', verbose_name = _("Address"))
     ville = models.IntegerField(choices = VILLE, verbose_name=_('Ville'))
     email = models.EmailField(max_length=255,blank=True, null=True,  default="", help_text='yourmail@gmail.com', verbose_name=_("Email address"))
@@ -105,7 +105,7 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)            
              
     def get_absolute_url(self):
-        return reverse("app:post-detail", kwargs = {"slug":self.slug})
+        return reverse("app:post-detail", kwargs = {"slug": self.slug})
     #     return reverse('home')
     #     return 'https://www.google.fr'
     

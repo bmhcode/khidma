@@ -4,6 +4,7 @@ from app.models import Post
 class PostSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source = 'category.name')
     ville = serializers.CharField(source = 'get_ville_display')
+    
     def __str__(self):
         pass
 

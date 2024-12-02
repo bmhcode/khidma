@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
+# from decouple import config
 import os
-from decouple import config
+import dj_database_url
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,8 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
 
+# SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = '3d6f45a5fc12445dbac2f59c3b6c7cb1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -87,24 +88,26 @@ WSGI_APPLICATION = 'khidma.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+import dj_database_url
+
+if 'DATABASES_URL' in os.environ: 
+    DATABASES = {
+        "defautl" : dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
-}
-'''
-'''
-DATABASES = {
-    "defautl" : dj_database_url.parse(os.environ.get("DATABASE_URL"))
-}
-'''
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
+'''
 DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgressql',
+            'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'khidma_db',
             'USER': 'khidma_db_user',
             'PASSWORD': 'mQYxZ082NKr1VQTLupFXvpbRBzLMUxww',
@@ -112,7 +115,7 @@ DATABASES = {
             'PORT' : '5432',
         }
 }
-
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -152,6 +155,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'khidma/static')
     ] # and tap python manage.py collectstatic
+
+# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

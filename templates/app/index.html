@@ -35,22 +35,12 @@
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
 
-
-
-
-
-
-
-
-
         <h3 class="col-6 tm-text-primary ml-0"> List of posts</h3>
-
         <div class="row tm-mb-90">
-            {% for post in posts_in_page %}
-          
+            {% for post in post_list %}
       	    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 m-3">
                  
-                    {% if post in posts_in_wishlist %}
+                    {% if post in posts %}
                         <h5>{{ post.category }}<span class="tm-text-secondary">({{ post.user }})</span>
                             <a class="fa fa-heart" href="{% url 'app:add-to-wishlist' %}?post_slug={{post.slug}}"></a>
                         </h5> 
@@ -64,14 +54,16 @@
                         <img src="{{ post.imageURL }}" alt="Image" class="mb-4 img-fluid" >
                         <figcaption class="d-flex align-items-center justify-content-center">
                             <h2>{{ post.category }}</h2>
-                            <a href="{{ post.get_absolute_url }}">View more</a>
+                            {% comment %} <a href="{{ post.get_absolute_url }}">View more</a> {% endcomment %}
+                            <a href="{% url 'app:post-detail' post.slug %}">View more</a>
                         </figcaption>                    
                     </figure>
 
                     {% comment %} <h4><a class="tm-text-primary mb-4 " href="{% url 'app:post-detail' post.slug %}">{{ post.title }}</a></h4> {% endcomment %}
-                    <h5><a class="tm-text-primary mb-4" href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
-                    <p>{{ post.address }} - <span class="tm-text-primary">{{ post.get_ville_display }}</span></p> 
+                    {% comment %} <h5><a class="tm-text-primary mb-4" href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5> {% endcomment %}
+                    <h5><a class="tm-text-primary mb-4" href="{% url 'app:post-detail' post.slug %}">{{ post.title }}</a></h5>
 
+                    <p>{{ post.address }} - <span class="tm-text-primary">{{ post.get_ville_display }}</span></p> 
 
 
                     <div class="d-flex justify-content-between tm-text-gray">
@@ -104,17 +96,22 @@
         <!-- Pagination -->
         <div class="row tm-mb-90">
             <div class="col-12 d-flex justify-content-between align-items-center tm-paging-col">
-                {% if posts_in_page.has_previous %}
-                    <a href="?page={{ posts_in_page.previous_page_number }}" class="btn btn-primary tm-btn-prev mb-2 disabled">Previous</a>
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary tm-btn-prev mb-2 disabled">Previous</a>
                 {% endif %}
+
+               <span class="current">
+                    Page  {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+               </span>
+                {% comment %} 
                 <div class="tm-paging d-flex">
                     {% for i in nums %}
                         <a class="tm-paging-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a>
-                        {% comment %} <a href="javascript:void(0);" class="tm-paging-link">4</a> {% endcomment %}
                     {% endfor %}
-                </div>
-                {% if posts_in_page.has_next %}
-                    <a href="?page={{ posts_in_page.next_page_number }}" class="btn btn-primary tm-btn-next">Next Page</a>
+                </div> 
+                {% endcomment %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary tm-btn-next">Next Page</a>
                 {% endif %}
 
             </div>            

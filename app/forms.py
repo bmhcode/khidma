@@ -11,7 +11,7 @@ class PostForm(forms.ModelForm):
             'category' : 'Category',
             'title' : 'Title', # 'title':_('title')
             'address' : 'My address',
-            'ville' : 'Ville',
+            'ville' : 'City',
             'email' : 'Email',
             'phone' : 'Phone',
             'description' : 'Infos about your post', 

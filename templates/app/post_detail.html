@@ -13,9 +13,7 @@
    
 <div class="container-fluid tm-container-content tm-mt-60">
         <div class="row mb-4 ">
-        
-            <h4 class="col-12 tm-text-primary">{{ post.title }} ( {{ post.category }} )</h4>
-           
+            <h4 class="col-12 tm-text-primary">{{ post.title }} ( {{ post.category }} )</h4> 
         </div>
         <div class="row tm-mb-80 mb-4">
             <div class="col-xl-8 col-lg-7 col-md-6 col-sm-12">
@@ -64,7 +62,6 @@
                         <div class="mr-4 mb-2">
                             <span class="tm-text-gray-dark">Created at : </span><span class="tm-text-primary">{{ post.date_created|date:"d M Y" }}</span>
                         </div>
-                       
                     </div>
                     <!-- End Informations about the post -->
 
@@ -93,7 +90,6 @@
                             <a href="{% url 'app:post-images-add' post.slug %}" class="btn btn-outline-success ml-2" >
                                 Add image
                             </a>           
-
                         {% endif %}
                     {% comment %} {% endif %} {% endcomment %}
                 </div>
@@ -183,7 +179,7 @@
             <h4 class="col-12 tm-text-primary">List of the {{post.category}}s</h4>
         </div>
         <div class="row mb-3 tm-gallery">
-            {% for post in related_posts %}
+            {% for post in post.category.all  %}
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
                 <div class="d-flex justify-content-between tm-text-gray">
                     <h5>{{ post.category }} <span class="tm-text-secondary">({{ post.user }})</span></h5>
@@ -217,6 +213,8 @@
                     {% endcomment %}
                 </div>     
             </div>
+            {% empty %}
+                <p> There is no programmer </p>
             {% endfor %}      
         </div>  
     <!-- Related posts End -->

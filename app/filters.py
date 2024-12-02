@@ -8,7 +8,6 @@ class PostFilter(django_filters.FilterSet):
     
     class Meta:
         model = Post
-        # fields = ['category','ville'] # '__all__'
         fields = {
             'title' : ['icontains'], #'istartswith'
             'category': ['exact'],
