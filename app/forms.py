@@ -1,17 +1,30 @@
 from django import forms
-from app.models import Post, PostImages, PostReview
+from app.models import Category, Post, PostImages, PostReview
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ('name','image') # "__all__"
+        help_texts = {
+            "name": "The name of the category",
+        }
+        labels = {
+            'name' : 'Name' , 'image':'Image' # 'name':_('name')
+        }
+        widgets = {
+            'name' : forms.TextInput(attrs={'class':'form-control', 'placeholder':'name of category'}),
+        }
+        
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ('category','title','address','ville','email',
                   'phone',"description",'skills','image') # "__all__"
         labels = {
-            # 'user' : 'User',
             'category' : 'Category',
             'title' : 'Title', # 'title':_('title')
             'address' : 'My address',
-            'ville' : 'City',
+            'ville' : 'Ville',
             'email' : 'Email',
             'phone' : 'Phone',
             'description' : 'Infos about your post', 

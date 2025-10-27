@@ -3,15 +3,15 @@ from django.contrib.auth.forms import UserCreationForm
 from userauths.models import User
 
 class UserRegisterForm(UserCreationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Username"}))# ,"required": True,"size": 10, "title": "Your name"}))
-    # email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder":"Email"}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'username'})),# ,"required": True,"size": 10, "title": "Your name"}))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder":"Password"}))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder":"Confirm Password"}))
-
+    # email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder":"Email"}))
+    
     class Meta:
         model = User
-        fields = ['username']
-        
+        fields = ['username','password1','password2']
+         
     # >>> name = forms.TextInput(attrs={"size": 10, "title": "Your name"})
 	# comment = forms.CharField(widget=forms.Textarea(attrs={'rows':3}))
 	# agree = forms.BooleanField()
@@ -20,7 +20,7 @@ class UserRegisterForm(UserCreationForm):
     
     # BIRTH_YEAR_CHOICES = ['1980', '1981', '1982']
     # class ExampleForm(forms.Form):
-    #     birth_year = forms.DateField(widget=forms.SelectDateWidget(years=BIRTH_YEAR_CHOICES))
+    # birth_year = forms.DateField(widget=forms.SelectDateWidget(years=BIRTH_YEAR_CHOICES))
 
 	# value = forms.DecimalField()
     # message = forms.CharField(
@@ -33,6 +33,7 @@ class UserRegisterForm(UserCreationForm):
     # first_name = forms.CharField(initial='Your name')
 	# agree = forms.BooleanField(initial=True)
 	# day = forms.DateField(initial=datetime.date.today)
+
 
     # FAVORITE_COLORS_CHOICES = [
     #     ('blue', 'Blue'),
@@ -51,28 +52,12 @@ class UserRegisterForm(UserCreationForm):
     # class ExampleForm(forms.Form):
     #     favorite_colors = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=FAVORITE_COLORS_CHOICES,)
 
-
-    # from django import forms
-    # from .models import MyModel
-
-    # # Create your forms here.
-
-    # class ExampleForm(forms.Form):
-    #     model_choice = forms.ModelChoiceField(
-    #         queryset = MyModel.objects.all(),
-    #         initial = 0
-    #         )
-
     # class ExampleForm(forms.Form):
     #     model_choices = forms.ModelMultipleChoiceField(
     #         widget = forms.CheckboxSelectMultiple,
     #         queryset = MyModel.objects.all(),
     #         initial = 0
     #         )
-
-    # #Rendering Django forms in HTML templates
-
-    # env > mysite > main > views.py
 
     # from django.shortcuts import render, redirect
     # from .forms import ExampleForm

@@ -15,7 +15,7 @@ class PostReviewAdmin(admin.TabularInline):
 class PostAdmin(admin.ModelAdmin):
     inlines = [PostImagesAdmin ,PostReviewAdmin]
 
-    list_display = ['title','image','post_image','category','is_active']
+    list_display = ['title','image','post_image','category','is_active','posted_at','note']
     exclude = ["slug"] # pour ne pas afficher dans admin 
     
 class CategoryAdmin(admin.ModelAdmin):

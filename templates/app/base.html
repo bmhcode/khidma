@@ -29,7 +29,7 @@ https://templatemo.com/tm-556-catalog-z
     </div>
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'app:index' %}">
+            <a class="navbar-brand" href="{% url 'app:posts' %}">
                 <i class="fa fa-search mr-2"></i>
                 Khidma
             </a>
@@ -46,26 +46,29 @@ https://templatemo.com/tm-556-catalog-z
                             <a href="#" class="nav-link dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true"
                             aria-expanded="false">Catygory</a>
                             <ul class="dropdown-menu">
-                                <li class="nav-item "><a class="nav-link" href="single-product.html">List of categories</a></li>
-                                <li class="nav-item"><a class="nav-link" href="{% url 'app:wishlist' %}">New category</a></li>
-                                </ul>
+                                <li class="nav-item "><a class="nav-link" href="{% url 'app:category-list' %}">List of categories</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'app:category-create' %}">New category</a></li>
+                            </ul>
                         </li>
-
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                             aria-expanded="false">{{user.username}}</a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item"><a class="nav-link" href="single-product.html">My Account</a></li>
+
+                                <li class="nav-item"><a class="nav-link" href="{% url 'app:posts-api' %}">Posts api</a></li>
+
+
                                 <li class="nav-item"><a class="nav-link" href="{% url 'app:wishlist' %}">My Wishlist</a></li>
-                                <li class="nav-item"><a class="nav-link" href="{% url 'userauths:sign-out' %}">Signout</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'userauths:logout' %}">Logout</a></li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link nav-link-2" href="{% url 'userauths:sign-up' %}">Sign Up</a>
+                            <a class="nav-link nav-link-2" href="{% url 'userauths:register' %}">Register</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-2 " href="{% url 'userauths:sign-in' %}">Sign-in</a>
+                            <a class="nav-link nav-link-2 " href="{% url 'userauths:login' %}">Login</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -78,6 +81,7 @@ https://templatemo.com/tm-556-catalog-z
                 <i class="fas fa-search"></i>
             </button>          
         </form>
+
         {% if request.user.is_authenticated %}
             <a href="{% url 'app:post-create' %}" class="btn btn-outline-success tm-search-btn ml-2" >
                 <i class="fas fa-plus"></i>
@@ -103,6 +107,12 @@ https://templatemo.com/tm-556-catalog-z
 
     {% block body %}
 
+
+
+
+
+
+
     {% endblock body %}
     
     <div class="container">
@@ -125,7 +135,6 @@ https://templatemo.com/tm-556-catalog-z
                         <li><a href="#">Our Company</a></li>
                         <li><a href="#">Contact</a></li> {% endcomment %}
 
-                       
                         <li>Bouraghda Mohamed Elhadi</li>
                         <li>Mobile : 07 76 47 16 46</li>
                         <li>Constantine, Algeria</li>

@@ -1,0 +1,61 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title> Khidma </title>
+{% endblock title %}
+    
+{% block body  %}
+
+<div class="container tm-mt-60">
+       
+<form method="GET">
+    <select name="paginate_by" id="">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="50">50</option>
+    </select>
+    <input type="submit" value="Paginate">
+</form>
+
+
+
+
+  <h3 class="col-6 tm-text-primary ml-0"> List of categories</h3>
+  <div class="row tm-mb-90">
+    {% for cat in category_list %}
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 m-3">
+        <h5>{{ cat }}<span class="tm-text-secondary">({{ cat.category.count }})</span></h5> 
+        <figure class="effect-ming tm-video-item mb-2" style='width:300px; height:150px; position: relative; margin: 0 auto'>        
+          <img src="{{ cat.imageURL }}" alt="Image" class="mb-4 img-fluid" >
+          <figcaption class="d-flex align-items-center justify-content-center">
+            <h2>{{ cat }}</h2>
+            {% comment %} <a href="{{ post.get_absolute_url }}">View more</a> {% endcomment %}
+            {% comment %} <a href="{% url 'app:post-detail' post.slug %}">View more</a> {% endcomment %}
+          </figcaption>                    
+        </figure>       
+      </div>   
+    {% endfor %}
+  </div> <!-- row -->
+
+  <!-- Start Pagination -->
+    <div class="row tm-mb-90">
+      <div class="col-12 d-flex justify-content-between align-items-center tm-paging-col">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary tm-btn-prev mb-2 disabled">Previous</a>
+        {% endif %}
+        <span class="current">
+          Page  {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary tm-btn-next">Next Page</a>
+        {% endif %}
+      </div>            
+    </div>
+  <!-- End Pagination -->
+
+</div> <!-- container-fluid, tm-container-content -->
+    
+{% endblock body %}
+   

@@ -12,85 +12,96 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from app.models import Category, Post, PostImages, PostReview, Wishlist_model
-from app.forms import PostForm, PostImagesForm, PostReviewForm
+from app.forms import CategoryForm, PostForm, PostImagesForm, PostReviewForm
 from django.forms import inlineformset_factory
-from app.filters import PostFilter
 
+from app.filters import PostFilter
+# =============== Class based view ===========================
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.urls import reverse
 
-# API
+# ===================== start API =============================
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from app.serializers import PostSerializer
-from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-# end API
+from rest_framework.views import APIView
 
-class PostListAPIView(ListAPIView) :
-    queryset = Post.objects.all()
+
+class PostListCreateAPIView(ListCreateAPIView) :
+    queryset = Post.objects.filter(is_active=True) # Product.objects.filter(stok__gt=0) , Product.objects.exclude(stock__gt=0)
     serializer_class = PostSerializer
-    filter_backends  = (DjangoFilterBackend,)
-    filterset_class  = PostFilter
+    # filter_backends  = [DjangoFilterBackend]
+    # filterset_class  = PostFilter
+  
+class PostDetailAPIView(RetrieveAPIView) :
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer   
+    # lookup_url_kwarg = 'bmh_post_id' # option the same in urls 'posts/<int=bmh_post_id>'
 
-# @login_required(login_url='userauths:sign-in') # change sign-in to login
-# def index(request):
-#     categories = Category.objects.all()
-#     # categories = Category.objects.all().annotate(post_count=Count("post"))
-#     cat = request.GET.get('cat1')
-#     if cat == None:
-#         posts = Post.objects.all().order_by("date_created") # .order_by('?') random
-#     else:
-#         # posts = Post.objects.filter(category__name=cat)
-#         posts = Post.objects.filter(Q(category__name__icontains=cat) | 
-#                                 Q(title__icontains=cat)
-#                                 )
-#     posts_wishlist = Wishlist_model.objects.all()
+
+# class OrderListAPIView(ListAPIView) :
+#     queryset = Post.objects.prefetch_related('items__post') # ManyToMany
+#     serializer_class = PostSerializer
+   
+# class UserOrderListAPIView(ListAPIView) :
+#     queryset = Post.objects.prefetch_related('items__post')
+#     serializer_class = PostSerializer
+    # def get_queryset(self):
+    #     qs = super().get_queryset()
+    #     return qs.filter(user=self.request.user)
     
-#     # Set up Pagination
-#     P = Paginator(posts, 4)
-#     page = request.GET.get('page')
-#     posts_in_page = P.get_page(page)
-#     nums = "a" * posts_in_page.paginator.num_pages
-#     nomber_pages = posts_in_page.paginator.num_pages 
+# class ProductInfoAPIView(APIView) :
+#     def get(self, request):
+#         products = Product.objects.all()
+#         serialiser = ProductInfoSerialiser({
+#             'product':products,
+#             'count': len(products),
+#             'max_price' : products.aggregate(max_price=Max('price')['max_price'])
+#         })
+ 
+# ================ End API ================================
+  
+# def category_create(request):
+#     form = CategoryForm(request.POST or None, request.FILES or None)
+#     # form.instance.user = request.user
+#     context = {
+#         'form':form
+#     }
+#     if form.is_valid():
+#         obj = form.save(commit=False) # form.save()
+#         obj.save()
+#         messages.success(request, "Thank you! You have successfully created a new category !")
+#         return redirect('app:category-list') # or form.instance.slug)
     
-#     average_rating = 3.76   # for test
+#     template = 'app/category_create.html'
+#     return render(request, template, context)
+
+class CategoryCreate(CreateView):
+    model = Category
+    form_class = CategoryForm # fields = '__all__' fields=['name','image']
+    # template_name = 'app/category_form.html' # by default
+    success_url = reverse_lazy('app:category-list')
     
-#     context = {'categories':categories,'posts':posts,
-#                'nums':nums,'nomber_pages':nomber_pages,
-#                'posts_in_page':posts_in_page,
-#                'posts_wishlist':posts_wishlist,
-#                'average_rating':average_rating}
-#     return render(request, 'app/index.html', context)
-
-@login_required(login_url='userauths:sign-in') # change sign-in to login
-def index(request):
-    categories = Category.objects.all()
-    post_filter = PostFilter(request.GET, queryset = Post.objects.all())
-    posts_in_wishlist = Wishlist_model.objects.all()
-
-    # Set up Pagination
-    posts = post_filter.qs
-    P = Paginator(posts, 3)
-    page = request.GET.get('page')
-    posts_in_page = P.get_page(page)
-    nums = "a" * posts_in_page.paginator.num_pages
-    nomber_pages = posts_in_page.paginator.num_pages
-    average_rating = 3.76   # for test
-    context = {
-               'categories': categories,
-               'post_filter_form': post_filter.form,
-               'nums': nums,
-               'nomber_pages': nomber_pages,
-               'posts_in_page': posts_in_page,         
-               'posts_in_wishlist': posts_in_wishlist,
-               'average_rating': average_rating,
-               }
-    return render(request, 'app/index.html', context)
-
-class PostListView(ListView):
-    model = Post
-    template_name = 'app/index.html' 
-    # context_object_name ='post_list'
+class CategoryList(ListView):
+    model = Category
+    # context_object_name ='category_list' # (by default)
+    # template_name = 'app/category_list.html' # (by default)
+    ordering = 'name' # ordering = ['-posted_at']
     paginate_by = 6
+    def get_paginate_by(self, queryset): 
+        paginate_by = self.request.GET.get('paginate_by')
+        return self.request.GET.get('page_size', self.paginate_by)
+    
+class PostList(ListView):
+    model = Post # queryset = Post.objects.all()
+    template_name = 'app/index.html'  # 'app/post_list.html' ( by default)
+    context_object_name = 'posts' # ='post_list' ( by default)
+    paginate_by = 6
+    ordering = 'title' # ordering = ['-posted_at']
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -99,63 +110,54 @@ class PostListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # context['posts'] = context['posts'].filter(user=self.request.user)
+        # context['count'] = context['posts'].filter(is_active=True).count()
         context['post_filter_form'] = self.filterset.form
         return context
 
-class PostDetailView(DetailView):
+
+class PostCreate(CreateView):
     model = Post
-           
-def post_add0(request):
-    categories = Category.objects.all() # categories = user.category_set.all() 
-    if request.method == 'POST':
-        data = request.POST
-        images = request.FILES.getlist('images')
-        if data['category'] != 'none':
-            category = Category.objects.get(id=data['category'])
-        elif data['category_new'] != '':
-            category, created = Category.objects.get_or_create(
-                # user=user,
-                name=data['category_new']
-                )
-        else:
-            category = None
-        for image in images:
-            post = Post.objects.create(
-                user         =request.user,
-                category     =category,
-                title        =data['title'],
-                address      =data['address'],
-                ville        =data['ville'],
-                email_address=data['email'],
-                description  =data['description'],
-                phone        =data['phone'],
-                image        =image,
-            )
-            
-        return redirect('app:index')
-    context = {'categories': categories}
-    return render(request, 'app/post-add.html', context)
+    form_class = PostForm # fields = '__all__'
+    # template_name = 'app/post_form.html'
+    def get_success_url(self): 
+        return reverse_lazy('app:post-detail',args=[self.object.slug])
 
-# def post_create_view(request):
-#     if request.method == 'POST':
-#         form = PostForm(request.POST or None, request.FILES or None)
-#         form.instance.user = request.user
-#         context = {
-#             'form':form
-#         }
-#         if form.is_valid():
-#             obj = form.save(commit=False) # form.save()
-#             obj.save()
-#             messages.success(request, "Thank you! You have successfully posted your post !")
-#             return redirect('app:post-detail', obj.slug ) # or form.instance.slug)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
     
-#     context = {
-#             "form" : PostForm()
-#     }
-#     template = 'app/post_create.html'
-#     return render(request, template, context)
+class PostDetail(DetailView):
+    model = Post
+    # template_name = 'app/post_detail.html'
+    # context_object_name ='post'
+    # pk_url_kwarg = 'post_pk'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.get_object()
+        context['related_posts'] = Post.objects.filter(category=post.category).exclude(slug=post.slug)[:4]
+        # Access related books using self.object.books (related_name)
+        # context['category'] = self.object.posts.values('title')
+        return context
+    
+class PostUpdate(UpdateView):
+    model = Post
+    form_class = PostForm # fields = ['title', 'description', 'complete'] or '__all__'
+    # exclude = ['is_active','stars','stars_begin','stars_days','posted_at','updated_at']
+    # template_name = 'app/post_form.html' (by default)
+   
+    def get_success_url(self):  # success_url = reverse_lazy('app:post-detail')
+        # Example: Redirect to the detail page of the updated object
+        return reverse_lazy('app:post-detail',args=[self.object.slug])
+       
+class PostDelete(DeleteView):
+    model = Post
+    # template_name = 'app/post_confirm_delete' # by default
+    context_object_name = 'post'
+    success_url = reverse_lazy('app:posts') 
 
-def post_create_view(request):
+def post_create(request):
     form = PostForm(request.POST or None, request.FILES or None)
     form.instance.user = request.user
     context = {
@@ -167,12 +169,11 @@ def post_create_view(request):
         obj.save()
         messages.success(request, "Thank you! You have successfully created a new blog post !")
         return redirect('app:post-detail', obj.slug ) # or form.instance.slug)
-    
     template = 'app/post_create.html'
     return render(request, template, context)
-
-def post_update_view(request,slug=None):
-    post = get_list_or_404(Post,slug=slug)
+  
+def post_update(request, slug=None):
+    post = get_list_or_404(Post, slug=slug)
     form = PostForm(request.POST or None, request.FILES or None, instance=post)
     context = {
         'form' : form 
@@ -182,10 +183,10 @@ def post_update_view(request,slug=None):
         messages.success(request, f"Hey {post.user}, your modification was seccesfully done")
         return redirect('app:post-detail', post.slug)
     
-    template = 'app/post-update.html'
+    template = 'app/post_update.html'
     return render(request, template, context)
 
-def post_delete_view(request,slug):
+def post_delete(request,slug):
     post = get_list_or_404(Post,slug=slug)
     if request.method == 'POST':
         post.delete()
@@ -194,7 +195,7 @@ def post_delete_view(request,slug):
     context = {
         'post':post
     }
-    template = 'app/post-delete.html'
+    template = 'app/post_delete.html'
     return render(request,template, context)
 
 def post_images_add(request,slug):
@@ -207,9 +208,9 @@ def post_images_add(request,slug):
         if formset.is_valid():
             formset.save()
             messages.success(request, "Thank you! You have successfully Add your image !")
-            return redirect('app:post-detail', slug)
+            return redirect('app:post-detail', post.slug)
     context = {'formset': formset}
-    return render(request, 'app/post-images-add.html', context)
+    return render(request, 'app/post_images_add.html', context)
 
 def post_images_delete(request,id):
     item = PostImages.objects.get(id=id)
@@ -226,24 +227,8 @@ def post_images_update(request,id):
         return redirect('app:post-detail', img.post.slug)
         
     context = {'img':img, 'form' : form}#, 'message' : message}
-    return render(request,'app/post-update.html', context)
-       
-def post_detail(request,slug):
-    post = Post.objects.get(slug=slug)
-    reviews = PostReview.objects.filter(post=post).order_by('-date')
-    # Getting all reviews related to a post
-    average_rating = PostReview.objects.filter(post=post).aggregate(rating=Avg('rating'))
-    # Post Review form
-    review_form = PostReviewForm()
-        
-    context = {
-        'post' : post,
-        'reviews' : reviews,
-        'average_rating' : average_rating,
-        'review_form' : review_form,
-        }
-    template_name = 'app/post-detail.html'
-    return render(request, template_name, context)
+    return render(request,'app/post_form.html', context)
+ 
 
 def ajax_add_review(request,slug):
     post = Post.objects.get(slug=slug)
@@ -261,7 +246,7 @@ def ajax_add_review(request,slug):
         'rating':request.POST['rating'],
     }
     average_reviews = PostReview.objects.filter(post=post).aggregate(rating=Avg('rating'))
-    return redirect('app:post_detail<slug:post.slug>')
+    return redirect('app:post-detail<slug:post.slug>')
 
     # return JsonResponse(
     #     {

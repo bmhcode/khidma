@@ -10,7 +10,6 @@
 {% block body %}
 
 <!-- Page Loader -->
-   
 <div class="container-fluid tm-container-content tm-mt-60">
         <div class="row mb-4 ">
             <h4 class="col-12 tm-text-primary">{{ post.title }} ( {{ post.category }} )</h4> 
@@ -60,7 +59,7 @@
                             <span class="tm-text-gray-dark">Email : </span><span class="tm-text-primary">{{ post.email }}</span>
                         </div>
                         <div class="mr-4 mb-2">
-                            <span class="tm-text-gray-dark">Created at : </span><span class="tm-text-primary">{{ post.date_created|date:"d M Y" }}</span>
+                            <span class="tm-text-gray-dark">Created at : </span><span class="tm-text-primary">{{ post.posted_at|date:"d M Y" }}</span>
                         </div>
                     </div>
                     <!-- End Informations about the post -->
@@ -80,7 +79,7 @@
                     <!-- End Skills -->
 
                     {% comment %} {% if request.user.is_authenticated  %} {% endcomment %}
-                        {% if request.user == post.user %}
+                        {% if request.user.is_superuser or request.user == post.user %}
                             <a href="{% url 'app:post-update' post.slug %}" class="btn btn-outline-success ml-2" >
                                 Update
                             </a>
@@ -89,7 +88,9 @@
                             </a>
                             <a href="{% url 'app:post-images-add' post.slug %}" class="btn btn-outline-success ml-2" >
                                 Add image
-                            </a>           
+                            </a>   
+                        {% else %}
+                        77777        
                         {% endif %}
                     {% comment %} {% endif %} {% endcomment %}
                 </div>
@@ -176,11 +177,13 @@
 
     <!-- Related posts -->
         <div class="row mb-4">
-            <h4 class="col-12 tm-text-primary">List of the {{post.category}}s</h4>
+            <h4 class="col-12 tm-text-primary">List of the {{post.category}}s </h4>
+
         </div>
         <div class="row mb-3 tm-gallery">
-            {% for post in post.category.all  %}
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+            {% for post in related_posts  %}
+                  
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
                 <div class="d-flex justify-content-between tm-text-gray">
                     <h5>{{ post.category }} <span class="tm-text-secondary">({{ post.user }})</span></h5>
                     <a class="fa fa-heart" href="{% url 'app:add-to-wishlist' %}?post_slug={{post.slug}}"></a>
@@ -212,10 +215,10 @@
                     <span><strong>( {{ post.post_review.get_rating }} )</strong></span>
                     {% endcomment %}
                 </div>     
-            </div>
+                            </div>
             {% empty %}
-                <p> There is no programmer </p>
-            {% endfor %}      
+                <p> There is no more {{post.category}}s </p>
+            {% endfor %}       
         </div>  
     <!-- Related posts End -->
 

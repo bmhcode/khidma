@@ -1,0 +1,36 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title> Khidma / add category </title>
+{% endblock title %}
+
+<body class="m-5">
+
+{% block body %}
+
+<div class="container">
+    <h2 class="tm-text-primary mb-3">Add category</h2>
+    <h1>{{message}}</h1>
+    <form method='POST' action='' enctype='multipart/form-data'>
+        {% csrf_token %}    
+        {{form.as_p}}  
+        {% comment %} <div class="row">
+            <div class="col-6 mb-2">
+                {{form.name.label}}   
+                {{form.name}}   
+            </div>     
+            <div class="col-6">
+                {{form.image.label}}   
+                {{form.image}}   
+            </div>
+        </div> {% endcomment %}
+
+        <button type='submit' class="btn btn-primary m-3"> Add category </button> 
+        <br>
+    </form>
+        {% comment %} {% endif %} {% endcomment %}
+</div>
+{% endblock body %}
+  
+</body>

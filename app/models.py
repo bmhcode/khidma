@@ -6,7 +6,7 @@ from datetime import datetime, date
 from django.utils.text import slugify
 from django.utils.html import mark_safe # pip install markupsafe
 from ckeditor.fields import RichTextField # pip install django-ckeditor
-import django.utils.timezone
+# from django.utils import timezone
 from userauths.models import User
 # from taggit.managers import TaggableManager # pip install django-taggit
 
@@ -35,13 +35,13 @@ class Category(models.Model):
         return reverse('home')
         # return 'https://www.google.fr'
     
-    # @property
-    # def imageURL(self):
-    #     try:
-    #         url = self.image.url
-    #     except:
-    #         url = ''
-    #     return url
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
     
     def category_image(self):
         return mark_safe('<img src="%s" width="50" height="50" />' % (self.image.url))
@@ -57,20 +57,58 @@ VILLE = (
     (8,"Bechar"),
     (9,"Blida"),
     (10,"Bouira"), 
+    (11,"Tamanrasset"),
+    (12,"Tébessa"),
+    (13,"Tlemcen"),
+    (14,"Tiaret"),
+    (15,"Tizi Ouzou"),
+    (16,"Alger"),
+    (17,"Djelfa"),
+    (18,"Jijel"),
+    (19,"Setif"),
+    (20,"Saïda"), 
+    (21,"Skikda"),
+    (22,"Sidi Bel Abbès"),
+    (23,"Annaba"),
+    (24,"Guelma"),
+    (25,"25.Constantine"),
+    (26,"Médéa"),
+    (27,"Mostaganem"),
+    (28,"M'Sila"),
+    (29,"Mascara"),
+    (30,"30.Ouargla"), 
+    (31,"Oran"),
+    (32,"El Bayadh"),
+    (33,"Illizi"),
+    (34,"Bordj Bou Arreridj"),
+    (35,"Boumerdès"),
+    (36,"El Tarf"),
+    (37,"Tindouf"),
+    (38,"Tissemsilt"),
+    (39,"El Oued"),
+    (40,"Khenchela"), 
+    (41,"Souk Ahras"),
+    (42,"Tipaza"),
+    (43,"Mila"),
+    (44,"Aïn Defla"),
+    (45,"Naâma"),
+    (46,"Aïn Témouchent"),
+    (47,"Ghardaïa"),
+    (48,"Relizane"),
+    (49,"Timimoun"),
+    (50,"Bordj Badji Mokhtar"), 
+    (51,"Ouled Djellal"),
+    (52,"Béni Abbèss"),
+    (53,"In Salah"),
+    (54,"In Guezzam"),
+    (55,"Touggourt "),
+    (56,"Djanet"),
+    (57,"El Maghaier"),
+    (58,"El Menia"),
+    
 )
 class Post(models.Model):
-    '''
-    class VilleChoices(models.IntegerChoices):
-        1='Adrar'
-        2='Chelef'
-        3='Agout'
-        4='Oum Bouaghi'
-        5='Batna'
-        ....        
-    ville = models.IntegerField(max_length=20, choices = VilleChoices.choices, verbose_name=_('Ville'))
-
-    '''
-        
+   
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("User"))
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="category", verbose_name=_("Category"))
     title  = models.CharField(max_length=100, default='', help_text='Title of post', verbose_name = _("title"), unique=True)
@@ -82,14 +120,15 @@ class Post(models.Model):
     slug  = models.SlugField(blank=True, null=True, unique=True, help_text = 'Unique value for post page URL, created from name.')
     image = models.ImageField(blank=True, upload_to='post images/', default='post.jpg',  verbose_name=_('Image')) #,default='media/placeholder.png')
     is_active = models.BooleanField(default=True, verbose_name=_("is active"))
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name=_('Posted at'))
-    date_updated = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
+    posted_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Posted at')) #, default = timezone.now)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
     
     stars = models.IntegerField(default=0, verbose_name=_('Nomber of Stars'))
     stars_begin = models.DateTimeField(blank=True, null=True, verbose_name=_('Stars date'))
     stars_days = models.IntegerField( default=0, verbose_name=_('Stars days'))
     # tags = TaggableManager(blank=True)
     skills = models.CharField(max_length=100, default='', help_text='My skills', verbose_name = _("skills"))
+    note  = models.CharField(max_length=1000, null=True,verbose_name = _("note"))
 
     class Meta:
         db_table = 'postes'
